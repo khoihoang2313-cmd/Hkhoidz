@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HKHOIDZ Menu - Dev HOANG KHOI</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #050a12;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* ================= LOGIN SCREEN ================= */
+        #loginScreen {
+            width: 100%;
+            max-width: 380px;
+            background-color: #0d1623;
+            border: 1px solid #14344a;
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 0 0 25px rgba(0, 170, 255, 0.15), inset 0 0 20px rgba(0, 210, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        #loginScreen::before, #loginScreen::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            bottom: 15%;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, #00d2ff, transparent);
+        }
+        #loginScreen::before { left: -1px; }
+        #loginScreen::after { right: -1px; }
+
+        .login-title {
+            color: #e0f0ff;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
+        }
+
+        .login-subtitle {
+            color: #7ab8d6;
+            font-size: 11px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .device-box {
+            width: 100%;
+            background: rgba(0, 210, 255, 0.05);
+            border: 1px dashed #14344a;
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .device-label {
+            color: #7ab8d6;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+
+        .device-id {
+            color: #00d2ff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: all;
+            word-break: break-all;
+        }
+
+        .device-id:hover {
+            color: #00ffaa;
+            text-shadow: 0 0 10px rgba(0, 255, 170, 0.6);
+        }
+
+        .device-id.admin-device {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+        }
+
+        .device-hint {
+            color: #4a6a80;
+            font-size: 8px;
+            margin-top: 3px;
+            font-style: italic;
+        }
+
+        .input-group {
+            width: 100%;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 15px;
+            background-color: #050a12;
+            border: 1px solid #14344a;
+            border-radius: 12px;
+            color: #00d2ff;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-group input:focus {
+            border-color: #00aaff;
+            box-shadow: inset 0 0 15px rgba(0, 170, 255, 0.1), 0 0 10px rgba(0, 170, 255, 0.3);
+        }
+
+        .input-group input::placeholder {
+            color: #3a5a70;
+            font-weight: 400;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #0055aa, #00aaff);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 170, 255, 0.4);
+            margin-top: 5px;
+        }
+
+        .login-btn:hover {
+            box-shadow: 0 0 25px rgba(0, 170, 255, 0.8);
+            transform: scale(1.02);
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        #loginMessage {
+            margin-top: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            min-height: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .msg-success { color: #00ffaa; text-shadow: 0 0 8px rgba(0, 255, 170, 0.5); }
+        .msg-error { color: #ff4d4d; text-shadow: 0 0 8px rgba(255, 77, 77, 0.5); }
+        .msg-admin { color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
+
+        /* ================= MAIN APP SCREEN ================= */
+        #mainScreen {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px 15px;
+            position: relative;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #mainScreen::before, #mainScreen::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            bottom: 10%;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, #00d2ff, transparent);
+        }
+        #mainScreen::before { left: 0; }
+        #mainScreen::after { right: 0; }
+
+        .user-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0d1623;
+            border: 1px solid #14344a;
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 210, 255, 0.05);
+        }
+
+        .user-name {
+            color: #00d2ff;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .user-name.admin {
+            color: #ffd700;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+        }
+
+        .user-expire {
+            color: #7ab8d6;
+            font-size: 10px;
+            font-weight: 600;
+            background: rgba(0, 210, 255, 0.1);
+            padding: 3px 8px;
+            border-radius: 8px;
+            border: 1px solid #14344a;
+        }
+
+        .user-expire.permanent {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .device-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0d1623;
+            border: 1px dashed #14344a;
+            border-radius: 10px;
+            padding: 6px 12px;
+            margin-bottom: 15px;
+            font-size: 9px;
+        }
+
+        .device-bar .label {
+            color: #7ab8d6;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .device-bar .value {
+            color: #00d2ff;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .device-bar .value.admin-device {
+            color: #ffd700;
+        }
+
+        /* ================= ADMIN PANEL ================= */
+        #adminPanel {
+            display: none;
+            background-color: #0d1623;
+            border: 1px solid #ffd700;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15), inset 0 0 15px rgba(255, 215, 0, 0.05);
+        }
+
+        .admin-title {
+            color: #ffd700;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .admin-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .admin-row input, .admin-row select {
+            flex: 1;
+            padding: 10px 12px;
+            background-color: #050a12;
+            border: 1px solid #3a3000;
+            border-radius: 8px;
+            color: #ffd700;
+            font-size: 12px;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .admin-row input:focus, .admin-row select:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+        }
+
+        .admin-row input::placeholder {
+            color: #6a5a00;
+            font-weight: 400;
+        }
+
+        .admin-row select option {
+            background-color: #0d1623;
+            color: #ffd700;
+        }
+
+        .admin-btn {
+            padding: 10px 15px;
+            background: linear-gradient(90deg, #aa8800, #ffd700);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .admin-btn:hover {
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            transform: scale(1.03);
+        }
+
+        .admin-btn:active {
+            transform: scale(0.97);
+        }
+
+        .auto-time-hint {
+            color: #7ab8d6;
+            font-size: 9px;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        #keyList {
+            max-height: 220px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border-top: 1px solid #3a3000;
+            padding-top: 10px;
+        }
+
+        .key-item {
+            display: flex;
+            flex-direction: column;
+            padding: 8px 10px;
+            background: #050a12;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 11px;
+            border-left: 3px solid #ffd700;
+        }
+
+        .key-item.vv { border-left-color: #00ffaa; }
+        .key-item.h1 { border-left-color: #ff88ff; }
+        .key-item.h12 { border-left-color: #00aaff; }
+        .key-item.h24 { border-left-color: #00d2ff; }
+        .key-item.d7 { border-left-color: #ffaa00; }
+        .key-item.m1 { border-left-color: #aa88ff; }
+        .key-item.expired { border-left-color: #ff4d4d; opacity: 0.6; }
+
+        .key-row-1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .key-text {
+            color: #e0f0ff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            font-size: 11px;
+        }
+
+        .key-text.expired-text {
+            color: #ff4d4d;
+            text-decoration: line-through;
+        }
+
+        .key-type {
+            color: #7ab8d6;
+            font-size: 9px;
+            font-weight: 600;
+            background: rgba(0, 210, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+
+        .key-type.vv {
+            color: #00ffaa;
+            background: rgba(0, 255, 170, 0.1);
+        }
+        .key-type.h1 {
+            color: #ff88ff;
+            background: rgba(255, 136, 255, 0.1);
+        }
+        .key-type.h24 {
+            color: #00d2ff;
+            background: rgba(0, 210, 255, 0.15);
+        }
+        .key-type.d7 {
+            color: #ffaa00;
+            background: rgba(255, 170, 0, 0.1);
+        }
+        .key-type.m1 {
+            color: #aa88ff;
+            background: rgba(170, 136, 255, 0.1);
+        }
+
+        .key-type.expired {
+            color: #ff4d4d;
+            background: rgba(255, 77, 77, 0.1);
+        }
+
+        .key-row-2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .key-time {
+            color: #7ab8d6;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .key-time.vv-time {
+            color: #00ffaa;
+        }
+
+        .key-time.expired-time {
+            color: #ff4d4d;
+        }
+
+        .delete-key-btn {
+            background: transparent;
+            border: 1px solid #ff4d4d;
+            color: #ff4d4d;
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 9px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .delete-key-btn:hover {
+            background: #ff4d4d;
+            color: #fff;
+            box-shadow: 0 0 8px rgba(255, 77, 77, 0.6);
+        }
+
+        /* ================= SETTING ITEMS ================= */
+        .setting-item {
+            background-color: #0d1623;
+            border: 1px solid #14344a;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            box-shadow: inset 0 0 15px rgba(0, 210, 255, 0.05), 0 0 10px rgba(0, 210, 255, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .setting-item.active {
+            border-color: #00aaff;
+            box-shadow: inset 0 0 20px rgba(0, 170, 255, 0.15), 0 0 15px rgba(0, 170, 255, 0.2);
+        }
+
+        .setting-item.inactive {
+            border-color: #3a1010;
+            box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.05), 0 0 10px rgba(255, 0, 0, 0.1);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .item-title {
+            color: #e0f0ff;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-text {
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 1px solid;
+            transition: all 0.3s ease;
+        }
+
+        .status-text.on {
+            color: #00d2ff;
+            border-color: #00d2ff;
+            background: rgba(0, 210, 255, 0.1);
+            box-shadow: 0 0 8px rgba(0, 210, 255, 0.4);
+        }
+
+        .status-text.off {
+            color: #ff4d4d;
+            border-color: #ff4d4d;
+            background: rgba(255, 77, 77, 0.1);
+            box-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 22px;
+            background-color: #2a3542;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background-color: #fff;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .setting-item.active .toggle-switch {
+            background-color: #00aaff;
+            box-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+        }
+        .setting-item.active .toggle-switch::after {
+            transform: translateX(18px);
+        }
+
+        .setting-item.inactive .toggle-switch {
+            background-color: #3a1010;
+        }
+        .setting-item.inactive .toggle-switch::after {
+            transform: translateX(0);
+        }
+
+        .item-subtext {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7ab8d6;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .check-icon {
+            color: #00d2ff;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            color: #4a6a80;
+            font-size: 11px;
+            margin-top: 25px;
+            letter-spacing: 1px;
+        }
+
+        .footer .dev-name {
+            color: #00d2ff;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(0, 210, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================= MÀN HÌNH ĐĂNG NHẬP ================= -->
+<div id="loginScreen">
+    <div class="login-title">HKHOIDZ MENU</div>
+    <div class="login-subtitle">
+        NHẬP KEY ĐỂ SỬ DỤNG<br>
+        <span style="color:#00d2ff; font-size:10px;">DEV: HOANG KHOI</span>
+    </div>
+
+    <div class="device-box">
+        <div class="device-label">🔒 MÃ MÁY CỦA BẠN</div>
+        <div class="device-id" id="deviceIdDisplay" title="Click để copy">ĐANG TẢI...</div>
+        <div class="device-hint">Click vào mã để copy</div>
+    </div>
+    
+    <div class="input-group">
+        <input type="text" id="keyInput" placeholder="Nhập key của bạn..." autocomplete="off">
+    </div>
+    
+    <button class="login-btn" id="loginBtn">XÁC NHẬN</button>
+    
+    <div id="loginMessage"></div>
+</div>
+
+<!-- ================= MÀN HÌNH CHÍNH ================= -->
+<div id="mainScreen">
+    <div class="user-bar">
+        <div class="user-name" id="userName">👤 USER</div>
+        <div class="user-expire" id="expireDisplay">--</div>
+    </div>
+
+    <div class="device-bar">
+        <span class="label">🔒 DEVICE ID:</span>
+        <span class="value" id="deviceIdMini" title="Click để copy">...</span>
+    </div>
+
+    <!-- BẢNG QUẢN TRỊ ADMIN -->
+    <div id="adminPanel">
+        <div class="admin-title">⚙️ BẢNG QUẢN TRỊ ADMIN</div>
+        
+        <div class="admin-row">
+            <input type="text" id="newKeyInput" placeholder="Nhập tên key mới...">
+            <select id="newKeyType">
+                <option value="1H">1 Giờ</option>
+                <option value="12H" selected>12 Giờ</option>
+                <option value="24H">24 Giờ (1 Ngày)</option>
+                <option value="7D">7 Ngày</option>
+                <option value="1M">1 Tháng</option>
+                <option value="VV">Vĩnh Viễn</option>
+            </select>
+            <button class="admin-btn" id="addKeyBtn">THÊM</button>
+        </div>
+        <div class="auto-time-hint">⏱ Thời gian sẽ được tự động điền khi thêm key</div>
+        
+        <div style="color:#7ab8d6; font-size:10px; margin-bottom:5px; font-weight:600;">📋 DANH SÁCH KEY HIỆN CÓ:</div>
+        <div id="keyList"></div>
+    </div>
+
+    <div id="settingsContainer"></div>
+</div>
+
+<script>
+    /* ============================================================
+       ⭐⭐⭐ KHU VỰC CẤU HÌNH - DEV HOANG KHOI ⭐⭐⭐
+       ============================================================
+       
+       【CÁC LOẠI THỜI HẠN KEY】
+       - 1H  : 1 giờ
+       - 12H : 12 giờ
+       - 24H : 24 giờ (1 ngày)
+       - 7D  : 7 ngày
+       - 1M  : 1 tháng (30 ngày)
+       - VV  : Vĩnh viễn
+       
+       【1】THÊM KEY MỚI (trong code):
+       Thêm 1 dòng vào DEFAULT_KEYS bên dưới.
+       
+       Ví dụ:
+           "KEY-1H":   { type: "1H",  label: "1 Giờ" },
+           "KEY-12H":  { type: "12H", label: "12 Giờ" },
+           "KEY-24H":  { type: "24H", label: "24 Giờ" },
+           "KEY-7D":   { type: "7D",  label: "7 Ngày" },
+           "KEY-1M":   { type: "1M",  label: "1 Tháng" },
+           "KEY-VV":   { type: "VV",  label: "Vĩnh Viễn" },
+       
+       【2】MÃ MÁY ADMIN:
+       - Mở trang, copy "MÃ MÁY CỦA BẠN" ở màn hình Login.
+       - Dán vào mảng ADMIN_DEVICE_IDS.
+       ============================================================ */
+
+    // ----- DANH SÁCH KEY MẶC ĐỊNH -----
+    const DEFAULT_KEYS = {
+        "12H-HKHOIDZ":  { type: "12H", label: "12 Giờ" },
+        "VV-HKHOIDZ13": { type: "VV",  label: "Vĩnh Viễn" },
+
+        // ----- THÊM KEY MỚI Ở DƯỚI ĐÂY -----
+        // "KEYVIP-001":  { type: "VV",  label: "Vĩnh Viễn" },
+        // "KEY-7D-001":  { type: "7D",  label: "7 Ngày" },
+        // "KEY-1M-001":  { type: "1M",  label: "1 Tháng" },
+    };
+
+    // ----- DANH SÁCH MÃ MÁY ADMIN -----
+    const ADMIN_DEVICE_IDS = [
+        // "DAN-MA-MAY-CUA-BAN-VAO-DAY",
+    ];
+
+    /* ============================================================
+       ==== TỪ ĐÂY TRỞ XUỐNG LÀ CODE HỆ THỐNG ====
+       ============================================================ */
+
+    const DEV_NAME = "HOANG KHOI";
+
+    // Bảng quy đổi thời hạn (miligiây)
+    const DURATION_MAP = {
+        "1H":  1 * 60 * 60 * 1000,
+        "12H": 12 * 60 * 60 * 1000,
+        "24H": 24 * 60 * 60 * 1000,
+        "7D":  7 * 24 * 60 * 60 * 1000,
+        "1M":  30 * 24 * 60 * 60 * 1000,
+        "VV":  null  // Vĩnh viễn
+    };
+
+    const LABEL_MAP = {
+        "1H":  "1 Giờ",
+        "12H": "12 Giờ",
+        "24H": "24 Giờ",
+        "7D":  "7 Ngày",
+        "1M":  "1 Tháng",
+        "VV":  "Vĩnh Viễn"
+    };
+
+    const CSS_CLASS_MAP = {
+        "1H":  "h1",
+        "12H": "h12",
+        "24H": "h24",
+        "7D":  "d7",
+        "1M":  "m1",
+        "VV":  "vv"
+    };
+
+    // ================== TẠO DEVICE ID ==================
+    function generateDeviceId() {
+        const ua = navigator.userAgent || "";
+        const platform = navigator.platform || "";
+        const screenInfo = `${screen.width}x${screen.height}x${screen.colorDepth}`;
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+        const language = navigator.language || "";
+        const cores = navigator.hardwareConcurrency || 0;
+        const memory = navigator.deviceMemory || 0;
+
+        const raw = `${ua}|${platform}|${screenInfo}|${timezone}|${language}|${cores}|${memory}`;
+
+        let hash = 0;
+        for (let i = 0; i < raw.length; i++) {
+            const char = raw.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        const hashHex = Math.abs(hash).toString(16).padStart(8, '0').toUpperCase();
+
+        let hash2 = 0;
+        for (let i = raw.length - 1; i >= 0; i--) {
+            const char = raw.charCodeAt(i);
+            hash2 = ((hash2 << 5) - hash2) + char;
+            hash2 = hash2 & hash2;
+        }
+        const hashHex2 = Math.abs(hash2).toString(16).padStart(8, '0').toUpperCase();
+
+        return `${hashHex.substring(0, 4)}-${hashHex.substring(4, 8)}-${hashHex2.substring(0, 4)}-${hashHex2.substring(4, 8)}`;
+    }
+
+    function getDeviceId() {
+        let devId = localStorage.getItem('hkhoidz_device_id');
+        if (!devId) {
+            devId = generateDeviceId();
+            localStorage.setItem('hkhoidz_device_id', devId);
+        }
+        return devId;
+    }
+
+    const DEVICE_ID = getDeviceId();
+
+    function isAdminDevice() {
+        if (ADMIN_DEVICE_IDS.length === 0) return false;
+        return ADMIN_DEVICE_IDS.includes(DEVICE_ID);
+    }
+
+    const IS_ADMIN_DEVICE = isAdminDevice();
+
+    // ================== HIỂN THỊ DEVICE ID ==================
+    const deviceIdDisplay = document.getElementById('deviceIdDisplay');
+    const deviceIdMini = document.getElementById('deviceIdMini');
+
+    if (IS_ADMIN_DEVICE) {
+        deviceIdDisplay.textContent = DEVICE_ID + " 👑";
+        deviceIdDisplay.classList.add('admin-device');
+        deviceIdMini.textContent = DEVICE_ID + " 👑";
+        deviceIdMini.classList.add('admin-device');
+    } else {
+        deviceIdDisplay.textContent = DEVICE_ID;
+        deviceIdMini.textContent = DEVICE_ID;
+    }
+
+    function copyDeviceId(el) {
+        const text = DEVICE_ID;
+        const restore = () => {
+            if (IS_ADMIN_DEVICE) {
+                el.textContent = DEVICE_ID + " 👑";
+            } else {
+                el.textContent = DEVICE_ID;
+            }
+        };
+        navigator.clipboard.writeText(text).then(() => {
+            el.textContent = "✓ ĐÃ COPY!";
+            playSound('success');
+            setTimeout(restore, 1200);
+        }).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            el.textContent = "✓ ĐÃ COPY!";
+            playSound('success');
+            setTimeout(restore, 1200);
+        });
+    }
+
+    deviceIdDisplay.addEventListener('click', () => copyDeviceId(deviceIdDisplay));
+    deviceIdMini.addEventListener('click', () => copyDeviceId(deviceIdMini));
+
+    // ================== ĐỊNH DẠNG THỜI GIAN ==================
+    function formatDateTime(timestamp) {
+        const d = new Date(timestamp);
+        const day = d.getDate().toString().padStart(2, '0');
+        const month = (d.getMonth() + 1).toString().padStart(2, '0');
+        const hours = d.getHours().toString().padStart(2, '0');
+        const minutes = d.getMinutes().toString().padStart(2, '0');
+        return `${day}/${month} ${hours}:${minutes}`;
+    }
+
+    // ================== QUẢN LÝ KEY ==================
+    function loadKeys() {
+        try {
+            const saved = localStorage.getItem('hkhoidz_keys');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                return { ...DEFAULT_KEYS, ...parsed };
+            }
+        } catch(e) {}
+        return { ...DEFAULT_KEYS };
+    }
+
+    function saveKeys(keys) {
+        try {
+            localStorage.setItem('hkhoidz_keys', JSON.stringify(keys));
+        } catch(e) {}
+    }
+
+    let VALID_KEYS = loadKeys();
+
+    // Đảm bảo key cũ có trường createdAt
+    function ensureCreatedAt() {
+        let changed = false;
+        Object.keys(VALID_KEYS).forEach(k => {
+            const info = VALID_KEYS[k];
+            if (info.type !== "VV" && !info.createdAt) {
+                info.createdAt = Date.now();
+                changed = true;
+            }
+        });
+        if (changed) saveKeys(VALID_KEYS);
+    }
+    ensureCreatedAt();
+
+    // Kiểm tra key còn hạn không
+    function isKeyValid(key) {
+        const info = VALID_KEYS[key];
+        if (!info) return false;
+        if (info.type === "VV") return true;
+        const duration = DURATION_MAP[info.type];
+        if (duration === null || duration === undefined) return false;
+        if (!info.createdAt) return false;
+        return (Date.now() - info.createdAt) < duration;
+    }
+
+    // Lấy thời gian hết hạn của key
+    function getKeyExpireTime(key) {
+        const info = VALID_KEYS[key];
+        if (!info) return null;
+        if (info.type === "VV") return null;
+        const duration = DURATION_MAP[info.type];
+        if (duration === null || duration === undefined) return null;
+        if (!info.createdAt) return null;
+        return info.createdAt + duration;
+    }
+
+    // ================== ÂM THANH ==================
+    function playSound(type) {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
